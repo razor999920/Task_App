@@ -1,7 +1,15 @@
 const express = require('express')
 
 const app = express();
-const port = env("PORT") || 3000;
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('Testing')
+})
+
+app.post('/users', (req, res) => {
+    res.send('Testing')
+})
 
 app.listen(port, () => {
     console.log('Server is runnong on port: ' + port);
