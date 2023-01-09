@@ -12,12 +12,12 @@ datasource db {
 model User {
   @@map("user")
 
-  userId Int @id @default(autoincrement()) @map("user_id")
-  email String @unique @map("email")
-  password String @map("password")
-  name String @map("name")
+  userId BigInt @id @db.BigInt @default(autoincrement()) @map("user_id")
+  email String @unique @db.VarChar(255) @map("email")
+  password String @db.VarChar(255) @map("password")
+  name String @db.VarChar(255) @map("name")
   age Int @map("age")
-  createDate DateTime @map("create_date")
+  createDate DateTime @default(now()) @db.Date @map("create_date") 
 }
 
 model Task {
