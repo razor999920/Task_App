@@ -12,11 +12,11 @@ datasource db {
 model User {
   @@map("user")
 
-  userId BigInt @id @db.BigInt @default(autoincrement()) @map("user_id")
+  userId Int @id @db.Integer @default(autoincrement()) @map("user_id")
   email String @unique @db.VarChar(255) @map("email")
   password String @db.VarChar(255) @map("password")
   name String @db.VarChar(255) @map("name")
-  age Int @map("age")
+  age Int @db.SmallInt @map("age")
   createDate DateTime @default(now()) @db.Date @map("create_date") 
 }
 
