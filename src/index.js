@@ -20,6 +20,15 @@ app.post('/users', async (req, res) => {
     }
 })
 
+app.post('/tasks' , (req , res)=>{
+    try {
+        const task = prisma.task.create({data: req.body})
+        res.send(task);
+    } catch (err) {
+        res.status(400).send(err)
+    }
+})
+
 app.listen(port, () => {
     console.log('Server is runnong on port: ' + port);
 })
