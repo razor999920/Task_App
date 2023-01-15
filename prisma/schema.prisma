@@ -25,5 +25,5 @@ model Task {
 
   taskId Int @id @default(autoincrement()) @map("task_id")
   description String @map("description")
-  completed Boolean? @map("compeleted")
+  completed Boolean @map("completed") @default(false)
 }

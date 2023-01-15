@@ -20,9 +20,9 @@ app.post('/users', async (req, res) => {
     }
 })
 
-app.post('/tasks' , (req , res)=>{
+app.post('/tasks' , async (req , res)=>{
     try {
-        const task = prisma.task.create({data: req.body})
+        const task = await prisma.task.create({data: req.body})
         res.status(201).send(task);
     } catch (err) {
         res.status(400).send(err)
