@@ -1,2 +1,2 @@
 FROM node:18.14.0
-RUN ["node", "src/index.js"]
+RUN npm install
