@@ -5,11 +5,11 @@ const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json())
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Task App')
-})
+});
 
 app.post('/users', async (req, res) => {
     try {
@@ -18,7 +18,16 @@ app.post('/users', async (req, res) => {
     } catch (err) {
         res.status(400).send(err)
     }
-})
+});
+
+app.get('/users', async (req, res) => {
+    try {
+        const users = await prisma.user.findMany({});
+        res.status(200).send(user);
+    } catch(err) {
+        console.log(err);
+    }
+});
 
 app.post('/tasks' , async (req , res)=>{
     try {
@@ -31,4 +40,4 @@ app.post('/tasks' , async (req , res)=>{
 
 app.listen(port, () => {
     console.log('Server is runnong on port: ' + port);
-})
+});

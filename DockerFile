@@ -1,2 +1,6 @@
 FROM node:18.14.0
 RUN npm install
+CMD ["node", "src/index.js"]
+COPY . .
+WORKDIR /
+EXPOSE 3000
