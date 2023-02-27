@@ -11,21 +11,42 @@ app.get('/', (req, res) => {
     res.send('Task App')
 });
 
+app.get('/users', async (req, res) => {
+    try {
+        const users = await prisma.user.findMany({});
+        res.status(200).send(users);
+    } catch(err) {
+        res.status(500).send();
+    }
+});
+
+app.get('/user/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                userId: parseInt(userId)
+            }
+        });
+        
+        if (!user) {
+            return res.status(404).send();
+        }
+
+        res.send(user);
+        res.status(200).send(users);
+    } catch(err) {        
+        res.status(500).send();
+    }
+});
+
 app.post('/users', async (req, res) => {
     try {
         const user = await prisma.user.create({data: req.body})
         res.status(201).send(user)
     } catch (err) {
         res.status(400).send(err)
-    }
-});
-
-app.get('/users', async (req, res) => {
-    try {
-        const users = await prisma.user.findMany({});
-        res.status(200).send(user);
-    } catch(err) {
-        console.log(err);
     }
 });
 
