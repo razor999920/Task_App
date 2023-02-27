@@ -35,7 +35,6 @@ app.get('/user/:id', async (req, res) => {
         }
 
         res.send(user);
-        res.status(200).send(users);
     } catch(err) {        
         res.status(500).send();
     }
@@ -50,11 +49,42 @@ app.post('/users', async (req, res) => {
     }
 });
 
+app.get('/tasks', async (req, res) => {
+    try {
+        const tasks = await prisma.task.findMany({});
+        res.status(200).send(tasks);
+    } catch(err) {
+        res.status(500).send();
+    }
+});
+
+app.get('/task/:id', async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const task = await prisma.task.findUnique({
+            where: {
+                taskId: parseInt(taskId)
+            }
+        });
+        
+        if (!task) {
+            return res.status(404).send();
+        }
+
+        res.send(task);
+    } catch(err) {        
+        res.status(500).send();
+    }
+});
+
 app.post('/tasks' , async (req , res)=>{
     try {
         const task = await prisma.task.create({data: req.body})
         res.status(201).send(task);
     } catch (err) {
+        console.log("🚀 ~ file: index.js:86 ~ app.post ~ err:", err)
+        
         res.status(400).send(err)
     }
 })
