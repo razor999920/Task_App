@@ -156,6 +156,23 @@ app.put('/tasks/:id', async (req, res) => {
     }
 });
 
+app.delete('/tasks/:id', async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const task = await prisma.task.delete ({
+            where: {
+                taskId: parseInt(taskId)
+            },
+        });
+
+        res.status(200).send(task);
+    } catch (err) {
+        console.log(err)
+        res.status(400).send(err);
+    }
+});
+
 app.listen(port, () => {
     console.log('Server is runnong on port: ' + port);
 });
