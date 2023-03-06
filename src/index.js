@@ -1,5 +1,5 @@
 const express = require('express')
-const {PrismaClient} = require('@prisma/client')
+const {PrismaClient, Prisma} = require('@prisma/client')
 const prisma = new PrismaClient();
 
 const app = express();
@@ -49,6 +49,33 @@ app.post('/users', async (req, res) => {
     }
 });
 
+app.put('/users/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const {email, name, age} = req.body;
+
+        const user = await prisma.user.update({
+            where: {
+                userId: parseInt(userId)
+            },
+            data: {
+                email,
+                name,
+                age
+            }
+        });
+                
+        if (!user) {
+            res.status(404).send();
+        }
+
+        res.send(user);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
 app.get('/tasks', async (req, res) => {
     try {
         const tasks = await prisma.task.findMany({});
@@ -82,9 +109,7 @@ app.post('/tasks' , async (req , res)=>{
     try {
         const task = await prisma.task.create({data: req.body})
         res.status(201).send(task);
-    } catch (err) {
-        console.log("🚀 ~ file: index.js:86 ~ app.post ~ err:", err)
-        
+    } catch (err) {        
         res.status(400).send(err)
     }
 })
