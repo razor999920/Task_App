@@ -58,8 +58,7 @@ app.put('/users/:id', async (req, res) => {
         const user = await prisma.user.update({
             where: {
                 userId: parseInt(userId)
-            },
-            data: {
+            }, data: {
                 email,
                 name,
                 age
@@ -72,6 +71,23 @@ app.put('/users/:id', async (req, res) => {
 
         res.send(user);
     } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
+app.delete('/users/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await prisma.user.delete ({
+            where: {
+                userId: parseInt(userId)
+            },
+        });
+
+        res.status(200).send(user);
+    } catch (err) {
+        console.log(err)
         res.status(400).send(err);
     }
 });
