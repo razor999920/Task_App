@@ -112,7 +112,33 @@ app.post('/tasks' , async (req , res)=>{
     } catch (err) {        
         res.status(400).send(err)
     }
-})
+});
+
+app.put('/tasks/:id', async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const {description, completed} = req.body;
+
+        const task = await prisma.task.update({
+            where: {
+                taskId: parseInt(taskId)
+            },
+            data: {
+                description,
+                completed
+            }
+        });
+                
+        if (!task) {
+            res.status(404).send();
+        }
+
+        res.send(task);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
 
 app.listen(port, () => {
     console.log('Server is runnong on port: ' + port);
