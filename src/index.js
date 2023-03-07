@@ -12,7 +12,7 @@ app.use(userRouter);
 app.use(taskRouter);
 
 app.get('/', (req, res) => {
-    res.send('Task App')
+    res.send('<div style="display: flex; justify-content: center">Task App</div>')
 });
 
 app.listen(port, () => {
