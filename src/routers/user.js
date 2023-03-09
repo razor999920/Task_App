@@ -1,7 +1,8 @@
 const express = require('express')
 const {PrismaClient, Prisma} = require('@prisma/client')
 const prisma = new PrismaClient();
-const router = new express.Router()
+const bcrypt = require('bcryptjs');
+const router = new express.Router();
 
 router.get('/users', async (req, res) => {
     try {
@@ -34,7 +35,16 @@ router.get('/user/:id', async (req, res) => {
 
 router.post('/users', async (req, res) => {
     try {
-        const user = await prisma.user.create({data: req.body})
+        const user = await prisma.user.create({
+            data: {
+                email: req.body.email,
+                password: await bcrypt.hash(req.body.password, 8),
+                name: req.body.name,
+                age: req.body.age,
+                createDate: req.body.createDate
+            }
+        });
+
         res.status(201).send(user)
     } catch (err) {
         res.status(400).send(err)
@@ -53,7 +63,8 @@ router.put('/users/:id', async (req, res) => {
             }, data: {
                 email,
                 name,
-                age
+                age,
+                password: await bcrypt.hash(req.body.password, 8)
             }
         });
                 
