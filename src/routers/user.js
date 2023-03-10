@@ -2,6 +2,7 @@ const express = require('express')
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const router = new express.Router();
 
 router.get('/users', async (req, res) => {
@@ -62,7 +63,6 @@ router.post('/users/login', async (req, res) => {
         if (!user) {
             return res.status(404).send("Unable to login");
         }
-
 
         // Verify if the the password matches
         const correctPassword = await bcrypt.compare(req.body.password, user.password);
