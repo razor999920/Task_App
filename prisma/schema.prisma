@@ -12,18 +12,31 @@ datasource db {
 model User {
   @@map("user")
 
-  userId Int @id @db.Integer @default(autoincrement()) @map("user_id")
+  userId BigInt @id @db.BigInt @default(autoincrement()) @map("user_id")
   email String @unique @db.VarChar(255) @map("email")
   password String @db.VarChar(255) @map("password")
   name String @db.VarChar(255) @map("name")
   age Int @db.SmallInt @map("age")
-  createDate DateTime @default(now()) @db.Date @map("create_date") 
+  createDate DateTime @default(now()) @db.Date @map("create_date")
+  refreshToken RefreshToken[] 
+}
+model RefreshToken {
+  @@map("refresh_token")
+
+  refreshTokenId String @id @unique @default(uuid()) @map("refresh_token_id")
+  hashedToke String @map("hashed_token")
+  userId BigInt @db.BigInt @map("user_id")
+  User User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  revoked Boolean @default(false) @map("revokded")
+  createDate DateTime @default(now()) @db.Date @map("create_date")
+  updateDate DateTime @updatedAt @db.Date @map("update_date")
+
 }
 
 model Task {
   @@map("task")
 
-  taskId Int @id @default(autoincrement()) @map("task_id")
+  taskId BigInt @id @db.BigInt @default(autoincrement()) @map("task_id")
   description String @map("description")
   completed Boolean @map("completed") @default(false)
 }

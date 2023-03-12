@@ -70,9 +70,13 @@ router.post('/users/login', async (req, res) => {
         if (!correctPassword) {
             return res.status(404).send("Invalid email/password incorrect");
         }
+        
+        // If it is a user then create a token'
+        const token = jwt.sign({ id: user.id }, process.env.JWT_TOKEN_SECRET);
 
-        res.send(user);
+        res.send({user, token});
     } catch (e) {
+        console.log(e)
         res.status(400).send()
     }
 });
