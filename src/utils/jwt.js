@@ -11,7 +11,7 @@ function generateAccessToken(user) {
     Keep the user logged in until inactivity
 */
 function generateRefreshToken (user, jti) {
-    return jwt.sign ({ userId: user.userId, jti } process.env.JWT_REFRESH_SECRET, { expiresIn: '8h' });
+    return jwt.sign ({ userId: user.userId, jti }, process.env.JWT_REFRESH_SECRET, { expiresIn: '8h' });
 }
 
 /*
