@@ -1,19 +1,14 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "user" (
+    "user_id" BIGSERIAL NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "age" SMALLINT NOT NULL,
+    "create_date" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  - The primary key for the `task` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - The primary key for the `user` table will be changed. If it partially fails, the table could be left without primary key constraint.
-
-*/
--- AlterTable
-ALTER TABLE "task" DROP CONSTRAINT "task_pkey",
-ALTER COLUMN "task_id" SET DATA TYPE BIGSERIAL,
-ADD CONSTRAINT "task_pkey" PRIMARY KEY ("task_id");
-
--- AlterTable
-ALTER TABLE "user" DROP CONSTRAINT "user_pkey",
-ALTER COLUMN "user_id" SET DATA TYPE BIGSERIAL,
-ADD CONSTRAINT "user_pkey" PRIMARY KEY ("user_id");
+    CONSTRAINT "user_pkey" PRIMARY KEY ("user_id")
+);
 
 -- CreateTable
 CREATE TABLE "refresh_token" (
@@ -26,6 +21,18 @@ CREATE TABLE "refresh_token" (
 
     CONSTRAINT "refresh_token_pkey" PRIMARY KEY ("refresh_token_id")
 );
+
+-- CreateTable
+CREATE TABLE "task" (
+    "task_id" BIGSERIAL NOT NULL,
+    "description" TEXT NOT NULL,
+    "completed" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "task_pkey" PRIMARY KEY ("task_id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refresh_token_refresh_token_id_key" ON "refresh_token"("refresh_token_id");
