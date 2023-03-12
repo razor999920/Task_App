@@ -3,7 +3,7 @@ const router = new express.Router();
 const { v4: uuidv4 } = require('uuid')
 const { generateTokens } = require('../../utils/jwt');
 const { addRefreshTokenToWhitelist } = require('./auth.services');
-const { getUserByEmail, createUser } = require('../users/users.services');
+const { getUserByEmail, createUser } = require('../user/user.services');
 
 router.post('/register', async (req, res, next) => {
   try {
