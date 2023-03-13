@@ -1,5 +1,6 @@
 const express = require('express');
 const router = new express.Router();
+const { getUserByEmail } = require('./user.services');
 
 router.get('/users', async (req, res) => {
     try {
@@ -14,10 +15,25 @@ router.get('/user/:id', async (req, res) => {
     const userId = req.params.id;
 
     try {
+        const user = await getUserByEmail;
+        
+        if (!user) {
+            return res.status(404).send();
+        }
+
+        res.send(user);
+    } catch(err) {        
+        res.status(500).send();
+    }
+});
+
+router.get('/user/:email', async (req, res) => {
+    const enail = req.params.enail;
+
+    try {
         const user = await db.user.findUnique({
-            where: {
-                userId: parseInt(userId)
-            }
+            where: 
+                email
         });
         
         if (!user) {

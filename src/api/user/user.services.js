@@ -85,6 +85,7 @@ function deleteUser(userId) {
 module.exports = {
     getAllUsers,
     getUserById,
+    getUserByEmail,
     createUser,
     updateUser,
     deleteUser
