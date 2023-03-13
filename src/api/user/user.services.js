@@ -14,10 +14,9 @@ function getUserById(userId) {
 }
 
 function getUserByEmail(email) {
+    console.log(email)
     return db.user.findUnique({
-        where: {
-            email: email
-        }
+        where: email
     });
 }
 
@@ -31,7 +30,7 @@ function createUser(user) {
 }
 
 function updateUser(user) {
-    const {email, name, age} = req.body;
+    const {email, name, age} = user;
 
     return db.user.update({
         where: {

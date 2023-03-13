@@ -12,10 +12,10 @@ router.get('/users', async (req, res) => {
 });
 
 router.get('/user/:id', async (req, res) => {
-    const userId = req.params.id;
+    const email = req.params.email;
 
     try {
-        const user = await getUserByEmail;
+        const user = await getUserByEmail(email);
         
         if (!user) {
             return res.status(404).send();
