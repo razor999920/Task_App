@@ -1,5 +1,6 @@
 const express = require('express');
 const router = new express.Router();
+const { db } = require('../../utils/db');
 const { getUserByEmail } = require('./user.services');
 
 router.get('/users', async (req, res) => {
@@ -28,7 +29,7 @@ router.get('/user/:id', async (req, res) => {
 });
 
 router.get('/user/:email', async (req, res) => {
-    const enail = req.params.enail;
+    const email = req.params.email;
 
     try {
         const user = await db.user.findUnique({
@@ -76,14 +77,14 @@ router.post('/users/login', async (req, res) => {
             return res.status(404).send("Unable to login");
         }
 
-        // Verify if the the password matches
+        // Verify if the password matches
         const correctPassword = await bcrypt.compare(req.body.password, user.password);
 
         if (!correctPassword) {
             return res.status(404).send("Invalid email/password incorrect");
         }
         
-        // If it is a user then create a token'
+        // If it is a user then create a token
         const token = jwt.sign({ id: user.id }, process.env.JWT_TOKEN_SECRET);
 
         res.send({user, token});

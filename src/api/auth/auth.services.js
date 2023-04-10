@@ -5,7 +5,7 @@ const { hashToken } = require('../../utils/hashToken');
 function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
   return db.refreshToken.create({
     data: {
-      id: jti,
+      refreshTokenId: jti,
       hashedToken: hashToken(refreshToken),
       userId
     },

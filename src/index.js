@@ -1,20 +1,18 @@
 const express = require('express');
-const auth = require('./api/auth/auth.routes');
-// const userRouter = require('./router/user');
-// const taskRouter = require('./router/task');
+const api = require('./api');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-// app.use(userRouter);
-// app.use(taskRouter);
-app.use(auth);
+
+// API
+app.use('/api', api);
 
 app.get('/', (req, res) => {
     res.send('<div style="display: flex;  justify-content: center">Task App</div>')
 });
 
 app.listen(port, () => {
-    console.log('Server is runnong on port: ' + port);
+    console.log('Server is running on port: ' + port);
 });

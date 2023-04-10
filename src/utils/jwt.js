@@ -1,17 +1,17 @@
 const jwt = require('jsonwebtoken');
-
+const JsonBig = require('json-bigint');
 /*
     Generate token with 5 minutes expiration
 */
 function generateAccessToken(user) {
-    return jwt.sign({ userId: user.userId }, process.env.JWT_ACCESS_SECRET, { expiresIn: '5m' });
+    return jwt.sign({ userId: user.userId.toString() }, process.env.JWT_ACCESS_SECRET, { expiresIn: '5m' });
 }
 
 /*
     Keep the user logged in until inactivity
 */
 function generateRefreshToken (user, jti) {
-    return jwt.sign ({ userId: user.userId, jti }, process.env.JWT_REFRESH_SECRET, { expiresIn: '8h' });
+    return jwt.sign ({ userId: user.userId.toString(), jti }, process.env.JWT_REFRESH_SECRET, { expiresIn: '8h' });
 }
 
 /*

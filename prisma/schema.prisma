@@ -24,7 +24,7 @@ model RefreshToken {
   @@map("refresh_token")
 
   refreshTokenId String @id @unique @default(uuid()) @map("refresh_token_id")
-  hashedToke String @map("hashed_token")
+  hashedToken String @map("hashed_token")
   userId BigInt @db.BigInt @map("user_id")
   User User @relation(fields: [userId], references: [userId], onDelete: Cascade)
   revoked Boolean @default(false) @map("revokded")

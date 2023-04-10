@@ -1,8 +1,8 @@
-const db = require('../../utils/db');
+const {db} = require('../../utils/db');
 const bcrypt = require('bcryptjs');
 
 function getAllUsers() {
-    return db.findMany({});
+    return db.user.findMany({});
 }
 
 function getUserById(userId) {
@@ -14,9 +14,10 @@ function getUserById(userId) {
 }
 
 function getUserByEmail(email) {
-    console.log(email)
     return db.user.findUnique({
-        where: email
+        where: {
+            email
+        }
     });
 }
 
@@ -34,7 +35,7 @@ function updateUser(user) {
 
     return db.user.update({
         where: {
-            userId: parseInt(userId)
+            userId: parseInt(user.userId)
         }, data: {
             email,
             name,
