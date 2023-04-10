@@ -20,6 +20,7 @@ model User {
   createDate DateTime @default(now()) @db.Date @map("create_date")
   refreshToken RefreshToken[] 
 }
+
 model RefreshToken {
   @@map("refresh_token")
 
