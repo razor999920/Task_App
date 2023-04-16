@@ -52,36 +52,6 @@ function deleteUser(userId) {
     });
 }
 
-// router.post('/users/login', async (req, res) => {
-//     try {
-//         const user = await db.user.findUnique({
-//             where: {
-//                 email: user.email,
-//             }
-//         });
-        
-//         if (!user) {
-//             return res.status(404).send("Unable to login");
-//         }
-
-//         // Verify if the the password matches
-//         const correctPassword = await bcrypt.compare(user.password, user.password);
-
-//         if (!correctPassword) {
-//             return res.status(404).send("Invalid email/password incorrect");
-//         }
-        
-//         // If it is a user then create a token'
-//         const token = jwt.sign({ id: user.id }, process.env.JWT_TOKEN_SECRET);
-
-//         res.send({user, token});
-//     } catch (e) {
-//         console.log(e)
-//         res.status(400).send()
-//     }
-// });
-
-
 module.exports = {
     getAllUsers,
     getUserById,

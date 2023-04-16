@@ -1,34 +1,36 @@
 const express = require('express');
 const router = new express.Router();
-const { db } = require('../../utils/db');
-const { getUserByEmail } = require('./user.services');
+const {db} = require('../../utils/db');
+const { getAllUsers, getUserById, getUserByEmail } = require('./user.services');
+const {serializedUsers, serializedUser} = require('../../utils/ userUtil');
 
-router.get('/users', async (req, res) => {
+router.get('/all', async (req, res) => {
     try {
-        const users = await db.user.findMany({});
-        res.status(200).send(users);
+        const users = await getAllUsers();
+        res.status(200).send(serializedUsers(users));
     } catch(err) {
-        res.status(500).send();
+        console.log(err)
+        res.status(500).send(err);
     }
 });
 
-router.get('/user/:id', async (req, res) => {
-    const email = req.params.email;
+router.get('/:userId', async (req, res) => {
+    const userId = req.params.userId;
 
     try {
-        const user = await getUserByEmail(email);
+        const user = await getUserById(userId);
         
         if (!user) {
             return res.status(404).send();
         }
 
-        res.send(user);
+        res.send(serializedUser(user));
     } catch(err) {        
         res.status(500).send();
     }
 });
 
-router.get('/user/:email', async (req, res) => {
+router.get('/:email', async (req, res) => {
     const email = req.params.email;
 
     try {
@@ -41,7 +43,7 @@ router.get('/user/:email', async (req, res) => {
             return res.status(404).send();
         }
 
-        res.send(user);
+        res.send(serializedUser(user));
     } catch(err) {        
         res.status(500).send();
     }
@@ -59,38 +61,9 @@ router.post('/users', async (req, res) => {
             }
         });
 
-        res.status(201).send(user)
+        res.status(201).send(serializedUser(user))
     } catch (err) {
         res.status(400).send(err)
-    }
-});
-
-router.post('/users/login', async (req, res) => {
-    try {
-        const user = await db.user.findUnique({
-            where: {
-                email: req.body.email,
-            }
-        });
-        
-        if (!user) {
-            return res.status(404).send("Unable to login");
-        }
-
-        // Verify if the password matches
-        const correctPassword = await bcrypt.compare(req.body.password, user.password);
-
-        if (!correctPassword) {
-            return res.status(404).send("Invalid email/password incorrect");
-        }
-        
-        // If it is a user then create a token
-        const token = jwt.sign({ id: user.id }, process.env.JWT_TOKEN_SECRET);
-
-        res.send({user, token});
-    } catch (e) {
-        console.log(e)
-        res.status(400).send()
     }
 });
 
@@ -115,7 +88,7 @@ router.put('/users/:id', async (req, res) => {
             res.status(404).send();
         }
 
-        res.send(user);
+        res.send(serializedUser(user));
     } catch (err) {
         res.status(400).send(err);
     }
@@ -131,7 +104,7 @@ router.delete('/users/:id', async (req, res) => {
             },
         });
 
-        res.status(200).send(user);
+        res.status(200).send(serializedUser(user));
     } catch (err) {
         console.log(err)
         res.status(400).send(err);
