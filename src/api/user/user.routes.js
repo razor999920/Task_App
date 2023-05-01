@@ -3,6 +3,7 @@ const router = new express.Router();
 const {db} = require('../../utils/db');
 const { getAllUsers, getUserById, getUserByEmail } = require('./user.services');
 const {serializedUsers, serializedUser} = require('../../utils/ userUtil');
+const {isAuthenticated} = require('../../middleware');
 
 router.get('/all', async (req, res) => {
     try {
@@ -11,6 +12,17 @@ router.get('/all', async (req, res) => {
     } catch(err) {
         console.log(err)
         res.status(500).send(err);
+    }
+});
+
+router.get('/profile', isAuthenticated, async (req, res) => {
+    try {
+        const { userId } = req.payload;
+        const user = await getUserById(userId);
+        delete user.password;
+        res.status(200).send(serializedUser(user));
+    } catch (err) {
+        res.status(400).send(err);
     }
 });
 
@@ -49,7 +61,7 @@ router.get('/:email', async (req, res) => {
     }
 });
 
-router.post('/users', async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const user = await db.user.create({
             data: {
@@ -67,7 +79,7 @@ router.post('/users', async (req, res) => {
     }
 });
 
-router.put('/users/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     const userId = req.params.id;
 
     try {
@@ -94,7 +106,7 @@ router.put('/users/:id', async (req, res) => {
     }
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const userId = req.params.id;
 
     try {

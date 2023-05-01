@@ -6,7 +6,6 @@ const { getUserByEmail, createUser, getUserById } = require('../user/user.servic
 const { hashToken } = require('../../utils/hashToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
 const router = new express.Router();
 
 /*
