@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 const {db} = require('../../utils/db');
-const { getAllUsers, getUserById, getUserByEmail } = require('./user.services');
+const { getAllUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser} = require('./user.services');
 const {serializedUsers, serializedUser} = require('../../utils/ userUtil');
 const {isAuthenticated} = require('../../middleware');
 
@@ -46,10 +46,7 @@ router.get('/:email', async (req, res) => {
     const email = req.params.email;
 
     try {
-        const user = await db.user.findUnique({
-            where: 
-                email
-        });
+        const user = await getUserByEmail(email);
         
         if (!user) {
             return res.status(404).send();
@@ -63,15 +60,7 @@ router.get('/:email', async (req, res) => {
 
 router.post('/create', async (req, res) => {
     try {
-        const user = await db.user.create({
-            data: {
-                email: req.body.email,
-                password: await bcrypt.hash(req.body.password, 8),
-                name: req.body.name,
-                age: req.body.age,
-                createDate: req.body.createDate
-            }
-        });
+        const user = await createUser(req.body);
 
         res.status(201).send(serializedUser(user))
     } catch (err) {
@@ -83,18 +72,7 @@ router.put('/update/:id', async (req, res) => {
     const userId = req.params.id;
 
     try {
-        const {email, name, age} = req.body;
-
-        const user = await db.user.update({
-            where: {
-                userId: parseInt(userId)
-            }, data: {
-                email,
-                name,
-                age,
-                password: await bcrypt.hash(req.body.password, 8)
-            }
-        });
+        const user = await updateUser(req.body);
                 
         if (!user) {
             res.status(404).send();
@@ -110,11 +88,7 @@ router.delete('/:id', async (req, res) => {
     const userId = req.params.id;
 
     try {
-        const user = await db.user.delete ({
-            where: {
-                userId: parseInt(userId)
-            },
-        });
+        const user = await deleteUser(userId);
 
         res.status(200).send(serializedUser(user));
     } catch (err) {
