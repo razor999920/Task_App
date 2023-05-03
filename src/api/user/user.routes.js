@@ -1,8 +1,7 @@
 const express = require('express');
 const router = new express.Router();
-const {db} = require('../../utils/db');
 const { getAllUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser} = require('./user.services');
-const {serializedUsers, serializedUser} = require('../../utils/ userUtil');
+const {serializedUsers, serializedUser} = require('../../utils/userUtil');
 const {isAuthenticated} = require('../../middleware');
 
 router.get('/all', async (req, res) => {
