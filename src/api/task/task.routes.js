@@ -30,4 +30,43 @@ router.get('/:taskId', async (req, res) => {
     }
 });
 
+router.post('/' , async (req , res)=>{
+    try {
+        const task = await createTask(req.body);
+        res.status(201).send(task);
+    } catch (err) {
+        res.status(400).send(err)
+    }
+});
+
+router.put('/:id', async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const {description, completed} = req.body;
+        const task = await updateTask(taskId, description, completed);
+
+        if (!task) {
+            res.status(404).send();
+        }
+
+        res.send(task);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
+router.delete('/tasks/:id', async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const task = await deleteTask(taskId);
+
+        res.status(200).send(task);
+    } catch (err) {
+        console.log(err)
+        res.status(400).send(err);
+    }
+});
+
 module.exports = router;
