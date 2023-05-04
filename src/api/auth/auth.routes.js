@@ -93,14 +93,14 @@ router.post('/refreshToken', async (req, res, next) => {
       res.status(401).json({msg: "Unauthorized"});
     }
 
-    await deleteRefreshToken(savedRefreshToken.id);
+    await deleteRefreshToken(payload.jti);
     const jti = uuidv4();
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(user, jti);
     await addRefreshTokenToWhitelist({ jti, refreshToken: newRefreshToken, userId: user.id });
 
     res.json({
       accessToken,
-      refreshToken: newRefreshToken
+      newRefreshToken
     });
   } catch (err) {
     next(err);

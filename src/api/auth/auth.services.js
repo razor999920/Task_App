@@ -16,7 +16,7 @@ function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
 function findRefreshTokenById(id) {
   return db.refreshToken.findUnique({
     where: {
-      id,
+      refreshTokenId: id,
     },
   });
 }
@@ -25,7 +25,7 @@ function findRefreshTokenById(id) {
 function deleteRefreshToken(id) {
   return db.refreshToken.update({
     where: {
-      id,
+      refreshTokenId: id,
     },
     data: {
       revoked: true
