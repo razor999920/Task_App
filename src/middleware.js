@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+npm
 function isAuthenticated(req, res, next) {
     const { authorization } = req.headers;
 
