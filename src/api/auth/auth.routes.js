@@ -6,6 +6,7 @@ const { getUserByEmail, createUser, getUserById } = require('../user/user.servic
 const { hashToken } = require('../../utils/hashToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {isAuthenticated} = require("../../middleware");
 const router = new express.Router();
 
 /*
@@ -30,7 +31,7 @@ router.post('/register', async (req, res, next) => {
     const { accessToken, refreshToken } = generateTokens(user, jti);
     await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.userId });
 
-    res.json({ accessToken, refreshToken });
+    res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
   } catch (err) {
     next(err);
   }
@@ -61,7 +62,15 @@ router.post('/login', async (req, res, next) => {
     const {accessToken, refreshToken} = generateTokens(existingUser, jti);
     await addRefreshTokenToWhitelist({jti, refreshToken, userId: existingUser.userId});
 
-    res.json({accessToken, refreshToken});
+    res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/logout', isAuthenticated, async (res, req, next) => {
+  try {
+
   } catch (err) {
     next(err);
   }
@@ -98,10 +107,8 @@ router.post('/refreshToken', async (req, res, next) => {
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(user, jti);
     await addRefreshTokenToWhitelist({ jti, refreshToken: newRefreshToken, userId: user.id });
 
-    res.json({
-      accessToken,
-      newRefreshToken
-    });
+    res.cookie('access_token', {accessToken, newRefreshToken}, {httpOnly: true, secure: true});
+
   } catch (err) {
     next(err);
   }

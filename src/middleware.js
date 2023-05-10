@@ -1,14 +1,10 @@
 const jwt = require('jsonwebtoken');
-npm
 function isAuthenticated(req, res, next) {
-    const { authorization } = req.headers;
-
-    if (!authorization) {
-        res.status(401).json({msg: '🚫 Un-Authorized 🚫'});
-    }
-
     try {
-        const token = authorization.split(' ')[1];
+        const token = req.cookies.access_token;
+        if (!token) {
+            res.status(401).json({msg: '🚫 Un-Authorized 🚫'});
+        }
 
         req.payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     } catch (err) {
