@@ -1,4 +1,21 @@
+const csrfMiddleware = require('csurf')({ cookie: true });
 const jwt = require('jsonwebtoken');
+
+// Generate the CSRF token to pass as hidden field to the client
+function generateCsrfToken(req, res, next) {
+    res.cookie('XSRF-TOKEN', req.csrfToken());
+    next();
+}
+
+function validateCsrfToken(req, res, next) {
+    const token = req.headers['X-CSRF-Token'];
+    if (!token || token !== req.session.csrfToken) {
+        return res.status(403).send('Invalid CSRF Token');
+    }
+
+    next();
+}
+
 function isAuthenticated(req, res, next) {
     try {
         const token = req.cookies.access_token;
@@ -21,5 +38,8 @@ function isAuthenticated(req, res, next) {
 }
 
 module.exports = {
-    isAuthenticated
+    csrfMiddleware,
+    generateCsrfToken,
+    validateCsrfToken,
+    isAuthenticated,
 }

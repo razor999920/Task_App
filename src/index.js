@@ -1,17 +1,16 @@
 const express = require('express');
-const csurf = require('csurf');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const {csrfMiddleware, generateCsrfToken} = require('./middleware');
 const api = require('./api');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Middleware config
-const csrfMiddleware = csurf({ cookie: true });
-
 app.use(cookieParser());
 app.use(
     session({
@@ -26,29 +25,19 @@ app.use(
     })
 );
 
-// Generate the CSRF token to pass as hidden field to the client
-function generateCsrfToken(req, res, next) {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    next();
-}
-
-app.get('/testcsrf', csrfMiddleware, generateCsrfToken, (req, res) => {
-    // Your code here
-    // console.log(csrfMiddleware);
-    res.send("Done")
-});
-
-
+// Add the CSRF middleware in the node application
 app.use(csrfMiddleware);
-
-// Set CSRF token in res.locals to use it in views
-app.use((req, res, next) => {
-    res.locals.csrfToken = req.csrfToken();
-    next();
-});
+// Generate the CSRF token to pass as hidden field to the client
+app.use(generateCsrfToken);
 
 app.get('/', (req, res) => {
     res.send('<div style="display: flex;  justify-content: center">Task App</div>')
+});
+
+app.get('/getCSRF', (req, res) => {
+    // Your code here
+    // console.log(csrfMiddleware);
+    res.send({ csrfToken: req.csrfToken() });
 });
 
 // API

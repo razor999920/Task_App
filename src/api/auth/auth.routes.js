@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 const { v4: uuidv4 } = require('uuid')
 const { generateTokens } = require('../../utils/jwt');
 const { addRefreshTokenToWhitelist, revokeTokens, findRefreshTokenById, deleteRefreshToken } = require('./auth.services');
@@ -6,13 +7,12 @@ const { getUserByEmail, createUser, getUserById } = require('../user/user.servic
 const { hashToken } = require('../../utils/hashToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {isAuthenticated} = require("../../middleware");
-const router = new express.Router();
+const {isAuthenticated, validateCsrfToken, csrfMiddleware} = require("../../middleware");
 
 /*
 Route to register user
  */
-router.post('/register', async (req, res, next) => {
+router.post('/register', csrfMiddleware, async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
