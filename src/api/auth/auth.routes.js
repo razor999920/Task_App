@@ -32,7 +32,7 @@ router.post('/register', csrfMiddleware, async (req, res, next) => {
     await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.userId });
 
     res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
-  } catch (err) {
+  } catch (err) {s
     next(err);
   }
 });
@@ -40,7 +40,7 @@ router.post('/register', csrfMiddleware, async (req, res, next) => {
 /*
 Route to login user
  */
-router.post('/login', async (req, res, next) => {
+router.post('/login', csrfMiddleware , async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
