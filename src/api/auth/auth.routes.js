@@ -32,7 +32,7 @@ router.post('/register', csrfMiddleware, async (req, res, next) => {
     await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.userId });
 
     res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
-  } catch (err) {s
+  } catch (err) {
     next(err);
   }
 });
@@ -62,17 +62,28 @@ router.post('/login', csrfMiddleware , async (req, res, next) => {
     const {accessToken, refreshToken} = generateTokens(existingUser, jti);
     await addRefreshTokenToWhitelist({jti, refreshToken, userId: existingUser.userId});
 
-    res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
+    // res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
+    res.send({accessToken, refreshToken})
   } catch (err) {
     next(err);
   }
 });
 
-router.post('/logout', isAuthenticated, async (res, req, next) => {
+/*
+TODO: Add implementation of expiring just a single token
+ */
+router.post('/logout', csrfMiddleware, isAuthenticated, async (req, res, next) => {
   try {
+    const token = req.cookies.access_token;
+    req.payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
+    const { userId } = req.payload;
+    await revokeTokens(BigInt(userId));
+
+    res.send();
   } catch (err) {
-    next(err);
+    console.error(err)
+    res.status(500).send()
   }
 });
 
