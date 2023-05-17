@@ -31,7 +31,8 @@ router.post('/register', csrfMiddleware, async (req, res, next) => {
     const { accessToken, refreshToken } = generateTokens(user, jti);
     await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.userId });
 
-    res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
+    // res.cookie('access_token', {accessToken, refreshToken}, {httpOnly: true, secure: true});
+    res.send({accessToken, refreshToken})
   } catch (err) {
     next(err);
   }
