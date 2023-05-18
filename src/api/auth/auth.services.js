@@ -33,6 +33,19 @@ function deleteRefreshToken(id) {
   });
 }
 
+// Revoke user's current session token
+function revokeToken(userId, refreshTokenId) {
+  return db.refreshToken.updateMany({
+    where: {
+      userId,
+      refreshTokenId
+    },
+    data: {
+      revoked: true
+    }
+  });
+}
+
 // Revoke all user's token
 function revokeTokens(userId) {
   return db.refreshToken.updateMany({
@@ -49,5 +62,6 @@ module.exports = {
   addRefreshTokenToWhitelist,
   findRefreshTokenById,
   deleteRefreshToken,
+  revokeToken,
   revokeTokens
 };

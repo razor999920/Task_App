@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid')
 const { generateTokens } = require('../../utils/jwt');
-const { addRefreshTokenToWhitelist, revokeTokens, findRefreshTokenById, deleteRefreshToken } = require('./auth.services');
+const { addRefreshTokenToWhitelist, revokeToken, revokeTokens, findRefreshTokenById, deleteRefreshToken } = require('./auth.services');
 const { getUserByEmail, createUser, getUserById } = require('../user/user.services');
 const { hashToken } = require('../../utils/hashToken');
 const bcrypt = require('bcryptjs');
@@ -71,9 +71,28 @@ router.post('/login', csrfMiddleware , async (req, res, next) => {
 });
 
 /*
-TODO: Add implementation of expiring just a single token
+Logout single session
  */
 router.post('/logout', csrfMiddleware, isAuthenticated, async (req, res, next) => {
+  try {
+    const token = req.cookies.access_token;
+    req.payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+    const { userId, jti } = req.payload;
+    console.log(userId, jti)
+    await revokeToken(BigInt(userId), jti);
+
+    res.send("Logged out!");
+  } catch (err) {
+    console.error(err)
+    res.status(500).send()
+  }
+});
+
+/*
+Logout all session
+ */
+router.post('/logoutAll', csrfMiddleware, isAuthenticated, async (req, res, next) => {
   try {
     const token = req.cookies.access_token;
     req.payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
@@ -81,7 +100,7 @@ router.post('/logout', csrfMiddleware, isAuthenticated, async (req, res, next) =
     const { userId } = req.payload;
     await revokeTokens(BigInt(userId));
 
-    res.send();
+    res.send("Logged out!");
   } catch (err) {
     console.error(err)
     res.status(500).send()
