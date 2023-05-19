@@ -19,6 +19,7 @@ model User {
   age Int @db.SmallInt @map("age")
   createDate DateTime @default(now()) @db.Date @map("create_date")
   refreshToken RefreshToken[]
+  task Task[]
 }
 
 model RefreshToken {
@@ -39,4 +40,6 @@ model Task {
   taskId BigInt @id @db.BigInt @default(autoincrement()) @map("task_id")
   description String @map("description")
   completed Boolean @map("completed") @default(false)
+  userId BigInt @db.BigInt @map("user_id")
+  User User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
