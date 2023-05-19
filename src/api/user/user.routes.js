@@ -1,18 +1,8 @@
 const express = require('express');
 const router = new express.Router();
-const { getAllUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser} = require('./user.services');
+const { getUserById, getUserByEmail, createUser, updateUser, deleteUser } = require('./user.services');
 const {serializedUsers, serializedUser} = require('../../utils/userUtil');
 const {isAuthenticated} = require('../../middleware');
-
-router.get('/all', async (req, res) => {
-    try {
-        const users = await getAllUsers();
-        res.status(200).send(serializedUsers(users));
-    } catch(err) {
-        console.log(err)
-        res.status(500).send(err);
-    }
-});
 
 router.get('/profile', isAuthenticated, async (req, res) => {
     try {
@@ -67,7 +57,7 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', isAuthenticated, async (req, res) => {
     const userId = req.params.id;
 
     try {
@@ -83,7 +73,7 @@ router.put('/update/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, async (req, res) => {
     const userId = req.params.id;
 
     try {

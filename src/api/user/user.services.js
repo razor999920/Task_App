@@ -1,10 +1,6 @@
 const {db} = require('../../utils/db');
 const bcrypt = require('bcryptjs');
 
-function getAllUsers() {
-    return db.user.findMany({});
-}
-
 function getUserById(userId) {
     return db.user.findUnique({
         where: {
@@ -53,7 +49,6 @@ function deleteUser(userId) {
 }
 
 module.exports = {
-    getAllUsers,
     getUserById,
     getUserByEmail,
     createUser,
