@@ -11,6 +11,7 @@ const {isAuthenticated, validateCsrfToken, csrfMiddleware} = require("../../midd
 
 /*
 Route to register user
+TODO: Fix Route
  */
 router.post('/register', csrfMiddleware, async (req, res, next) => {
   try {
