@@ -1,5 +1,4 @@
 const {db} = require('../../utils/db');
-const bcrypt = require('bcryptjs');
 
 function getAllTasks() {
     return db.task.findMany({});
@@ -14,8 +13,16 @@ function getTaskById(taskId) {
     });
 }
 
-function createTask(task) {
-    return db.task.create({data: task});
+function createTask(task, userId) {
+    return db.task.create(
+        {
+            data: {
+                description: task.description,
+                completed: task.completed,
+                userId: BigInt(userId)
+            }
+        }
+    );
 }
 
 function updateTask(taskId, description, completed) {
@@ -38,10 +45,19 @@ function deleteTask(taskId) {
     });
 }
 
+function deleteTaskForUser(userId) {
+    return db.task.delete ({
+        where: {
+            userId
+        },
+    });
+}
+
 module.exports = {
     getAllTasks,
     getTaskById,
     createTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    deleteTaskForUser
 };

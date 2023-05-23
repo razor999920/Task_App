@@ -1,4 +1,5 @@
 const csrfMiddleware = require('csurf')({ cookie: true });
+const {deleteTaskForUser} = require('./api/task/task.services')
 const jwt = require('jsonwebtoken');
 
 // Generate the CSRF token to pass as hidden field to the client
@@ -14,6 +15,12 @@ function validateCsrfToken(req, res, next) {
     }
 
     next();
+}
+
+function deleteUserTask (res, req, next) {
+    const user = req.payload.user;
+
+    deleteTaskForUser(user.userId);
 }
 
 function isAuthenticated(req, res, next) {
