@@ -1,21 +1,28 @@
 const sgMail = require('@sendgrid/mail')
 
 // Set API key
-const sendGridApiKey = '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';
+const sendGridApiKey = process.env.SEND_GRID_API_KEY;
 sgMail.setApiKey(sendGridApiKey);
 
-const msg = {
-    to: 'razor999920@outlook.com',
-    from: 'razor999920@outlook.com',
-    subject: 'SendGrid test',
-    text: 'NodeJS TaskApp Email sending test.',
-    html: '<strong>NodeJS TaskApp</strong>',
+const sendWelcomeEmail = (email, name) => {
+    sgMail.send({
+        to: email,
+        from: "razor999920@outlook.com",
+        subject: "Thank you for joining in!",
+        text: `Welcome to the app, ${name}. We hope you enjoy the app!.`
+    })
 }
-sgMail
-    .send(msg)
-    .then(() => {
-        console.log('Email sent')
+
+const sendCancellationEmail = (email, name) => {
+    sgMail.send({
+        to: email,
+        from: "razor999920@outlook.com",
+        subject: "Sorry to see you go!",
+        text: `Hello ${name}, We are sorry to see you leave but we hope to see you come back!.`
     })
-    .catch((error) => {
-        console.error(error)
-    })
+}
+
+module.exports = {
+    sendWelcomeEmail,
+    sendCancellationEmail
+}
